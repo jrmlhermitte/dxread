@@ -1,0 +1,5 @@
+*.tar.gz
+*.SV
+*.EUM
+*.NOM
+*.pyc
