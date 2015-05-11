@@ -1,6 +1,13 @@
 import numpy as np
 import os
 import struct
+import gzip
+
+#from http://stackoverflow.com/questions/1704458/get-uncompressed-size-of-a-gz-file-in-python
+def getuncompressedsize(filename):
+    with open(filename) as f:
+        f.seek(-4, 2)
+        return struct.unpack('I', f.read(4))[0]
 
 class DXS1:
     '''The S1 data set for weather. 5 bytes long'''
@@ -11,8 +18,8 @@ class DXS1:
                 the first element from the left (so 2^8).
                 I could have used shift operators but I feel the 
                 brute force notation is more readable for this purpose (and
-                    faster). a & 0x1000000 is equivalent to:
-                    ((a & (0x1 << 7))>>7)
+                    faster). a & 0b1000000 is equivalent to:
+                    (a >> 7 & 0b1)
                 noday  :  1;
                 bxshor :  1;
                 lndwtr :  1;
@@ -127,11 +134,15 @@ class satData:
     ''' Satellite data object.'''
     pass
 
-def dxread(filename):
+def dxread(filename,gz=None):
     ''' Quick utility to read weather data.
         Returns a weather object. NOTE: Bytes are stored
         in a big endian format. '''
-    filesize = os.path.getsize(filename)
+    if(gz == None):
+        filesize = os.path.getsize(filename)
+    else:
+        #Only works for files < 2GB!
+        filesize = getuncompressedsize(filename)
     RECSIZE = 384*80#number of bytes in a record
     numrecs = filesize/RECSIZE
 
@@ -140,7 +151,11 @@ def dxread(filename):
     satdat.filesize = filesize
 
     #open file
-    fd = open(filename,"rb")
+    if(gz == None):
+        fd = open(filename,"rb")
+    else:
+        fd = gzip.open(filename,"rb")
+        
 
     #first read header
     br = fd.read(RECSIZE)## read record by record
@@ -213,7 +228,7 @@ def dxread(filename):
             satdat.dxs3s.append(dxs3)
             cur += 7
 
-            #read Add3 (3 bytes) only is sattyp > 0
+            #read Add3 (3 bytes) only is sattyp is one of three values
             if(satdat.sattyp == -3 or satdat.sattyp == 1 or satdat.sattyp == 2):
                 dxadd3 = DXADD3(br[cur:cur+3])
                 satdat.dxadd3s.append(dxadd3)
