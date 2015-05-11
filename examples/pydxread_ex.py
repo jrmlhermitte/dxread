@@ -8,7 +8,8 @@ from scipy.interpolate import Rbf
 #filename = "data/ISCCP.DX.0.GOE-7.1991.01.01.1200.AES"
 #filename = "data/ISCCP.DX.0.NOA-10A.1991.01.01.0000.NOM"
 #filename = "data/ISCCP.DX.0.MET-7.2004.01.01.0300.EUM"
-filename = "data/ISCCP.DX.0.GOE-7.1991.01.01.1500.AES"
+#filename = "data/ISCCP.DX.0.GOE-7.1991.01.01.1500.AES"
+filename = "data/ISCCP.DX.0.GOE-6.1985.01.01.0300.CSU"
 
 
 stdat = pydx.dxread(filename)
