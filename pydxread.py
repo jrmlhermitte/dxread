@@ -18,7 +18,7 @@ class DXS1:
                 the first element from the left (so 2^8).
                 I could have used shift operators but I feel the 
                 brute force notation is more readable for this purpose (and
-                    faster). a & 0b1000000 is equivalent to:
+                    faster). (a & 0b1000000) >>7 is equivalent to:
                     (a >> 7 & 0b1)
                 noday  :  1;
                 bxshor :  1;
@@ -32,14 +32,14 @@ class DXS1:
                 irad   :  8;
                 bxicsr :  8;
                 '''
-        self.noday  = br[0] & 0b10000000
-        self.bxshor = br[0] & 0b01000000
-        self.lndwtr = br[0] & 0b00100000
-        self.hitopo = br[0] & 0b00010000
-        self.snoice = br[0] & 0b00001000
-        self.timspa = br[0] & 0b00000011
-        self.isclog = br[1] & 0b11111000
-        self.bxithr = br[1] & 0b00000111
+        self.noday  = (br[0] & 0b10000000) >> 7
+        self.bxshor = (br[0] & 0b01000000) >> 6
+        self.lndwtr = (br[0] & 0b00100000) >> 5
+        self.hitopo = (br[0] & 0b00010000) >> 4
+        self.snoice = (br[0] & 0b00001100) >> 2
+        self.timspa = (br[0] & 0b00000011)
+        self.isclog = (br[1] & 0b11111000) >> 3
+        self.bxithr = (br[1] & 0b00000111)
         self.mue    = br[2]
         self.irad   = br[3]
         self.bxicsr = br[4]
@@ -60,9 +60,9 @@ class DXS2:
         bxvcsr :  8;
         '''
     def __init__(self,br):
-        self.glint  = br[0] & 0b10000000
-        self.vcslog = br[0] & 0b01111000
-        self.bxvthr = br[0] & 0b00000111
+        self.glint  = (br[0] & 0b10000000) >> 7
+        self.vcslog = (br[0] & 0b01111000) >> 3
+        self.bxvthr = (br[0] & 0b00000111)
         self.mu0    = br[1]
         self.phi    = br[2]
         self.vrad   = br[3]
@@ -83,12 +83,12 @@ class DXS3:
          icsprs :  8;
     '''
     def __init__(self,br):
-        self.daynit = br[0] & 0b10000000
-        self.ithr   = br[0] & 0b01110000
-        self.vthr   = br[0] & 0b00001110
-        self.shore  = br[0] & 0b00000001
-        self.iret   = br[1] & 0b11110000
-        self.icsret = br[1] & 0b00001111
+        self.daynit = (br[0] & 0b10000000) >> 7
+        self.ithr   = (br[0] & 0b01110000) >> 4
+        self.vthr   = (br[0] & 0b00001110) >> 1
+        self.shore  = (br[0] & 0b00000001)
+        self.iret   = (br[1] & 0b11110000) >> 4
+        self.icsret = (br[1] & 0b00001111) 
         self.itmp   = br[2]
         self.iprs   = br[3]
         self.icstmp = br[4]
@@ -119,8 +119,8 @@ class DXS4:
         vprsic :  8;
 '''
     def __init__(self,br):
-        self.vret   = br[0] & 0b11110000
-        self.vcsret = br[0] & 0b00001111
+        self.vret   = (br[0] & 0b11110000) >> 4
+        self.vcsret = (br[0] & 0b00001111)
         self.vcsrad = br[1]
         self.valbta = br[2]
         self.vcsalb = br[3]
@@ -218,7 +218,6 @@ def dxread(filename,gz=None):
             #next read S2 (5 bytes), only if day
             if(dxs1.noday==0):
                 dxs2 = DXS2(br[cur:cur+5])
-                satdat.dxs2s.append(dxs2)
                 cur += 5
             else:
                 satdat.dxs2s.append(satData())

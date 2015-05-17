@@ -9,11 +9,19 @@ from scipy.interpolate import Rbf
 #filename = "data/ISCCP.DX.0.NOA-10A.1991.01.01.0000.NOM"
 #filename = "data/ISCCP.DX.0.MET-7.2004.01.01.0300.EUM"
 #filename = "data/ISCCP.DX.0.GOE-7.1991.01.01.1500.AES"
-filename = "data/ISCCP.DX.0.GOE-6.1985.01.01.0300.CSU"
+#filename = "data/ISCCP.DX.0.GOE-6.1985.01.01.0300.CSU"
+#this is daytime data so visible radiance may be measured
+filename = "data/ISCCP.DX.0.GOE-7.1991.01.01.1800.AES"
 
 
 stdat = pydx.dxread(filename)
 irads = np.array([o.irad for o in stdat.dxs1s])
+vrads = np.zeros(len(irads))
+cnt = 0
+for o in stdat.dxs2s:
+    if(hasattr(o,"vrad")):
+        vrads[cnt] = o.vrad
+    cnt += 1
 bxshors = np.array([o.bxshor for o in stdat.dxs1s])
 
 x = stdat.x
@@ -31,14 +39,13 @@ yd -= 1
 xd = xd[w]
 yd = yd[w]
 irads = irads[w]
-#bxshors = bxshors[w]
+vrads = vrads[w]
+bxshors = bxshors[w]
 
 xi,yi = np.array(np.meshgrid(xbins,ybins,indexing='ij'))
 zi = xi*0
-zi[xd,yd] = irads
+zi[xd,yd] = vrads
 #zi[xd,yd] = bxshors
 zi = zi[:,::-1]
-#rbf = Rbf(x, y, irads,function='linear')
-#zi = rbf(xi, yi)
 
 pg.image(zi)

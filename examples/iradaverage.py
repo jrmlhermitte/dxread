@@ -29,7 +29,7 @@ def pos2Grid(x,y,data,xbins=None,ybins=None):
 	
     xi,yi = np.array(np.meshgrid(xbins,ybins,indexing='ij'))
     zi = xi*0
-    zi[xd,y] = data
+    zi[xd,yd] = data
     return zi
 
 prefix = "data/ISCCP.DX.0.GOE-7.1991.01.01."
