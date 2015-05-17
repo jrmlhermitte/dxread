@@ -169,16 +169,16 @@ def dxread(filename,gz=None):
     satdat.nghtimg = int(nghtimg)
     del year, month, utc, satid, sattyp, nchans, nghtimg
 
-    satdat.lngs = []
-    satdat.lats = []
-    satdat.x = []
-    satdat.y = []
-    satdat.dxs1s = []
-    satdat.dxadd1s = []
-    satdat.dxs2s = []
-    satdat.dxs3s = []
-    satdat.dxadd3s = []
-    satdat.dxs4s = []
+    satdat.lngs = list()
+    satdat.lats = list()
+    satdat.x = list()
+    satdat.y = list()
+    satdat.dxs1s = list()
+    satdat.dxadd1s = list()
+    satdat.dxs2s = list()
+    satdat.dxs3s = list()
+    satdat.dxadd3s = list()
+    satdat.dxs4s = list()
 
     #Next read each piece
     for i in range(1,numrecs):
@@ -209,18 +209,23 @@ def dxread(filename,gz=None):
             #print dxs1.noday
             
             #next read Add1
+            #if doesn't exist, just add zeros
             nbytes = satdat.nchans-2
             if(nbytes > 0):
                 dxadd1 = DXADD1(br[cur:cur+nbytes])
-                satdat.dxadd1s.append(dxadd1)
                 cur   += nbytes
+            else:
+                dxadd1 = DXADD1(bytearray(nbytes))
+            satdat.dxadd1s.append(dxadd1)
+                
 
             #next read S2 (5 bytes), only if day
             if(dxs1.noday==0):
                 dxs2 = DXS2(br[cur:cur+5])
                 cur += 5
             else:
-                satdat.dxs2s.append(satData())
+                dxs2 = DXS2(bytearray(5))
+            satdat.dxs2s.append(dxs2)
 
             #read S3 (7 bytes)
             dxs3 = DXS3(br[cur:cur+7])
@@ -230,18 +235,18 @@ def dxread(filename,gz=None):
             #read Add3 (3 bytes) only is sattyp is one of three values
             if(satdat.sattyp == -3 or satdat.sattyp == 1 or satdat.sattyp == 2):
                 dxadd3 = DXADD3(br[cur:cur+3])
-                satdat.dxadd3s.append(dxadd3)
                 cur += 3
             else:
-                satdat.dxadd3s.append(satData())
+                dxadd3 = DXADD3(bytearray(3))
+            satdat.dxadd3s.append(dxadd3)
 
             #Read S4 (9 bytes) only if day
             if(dxs1.noday==0):
                 dxs4 = DXS4(br[cur:cur+9])
-                satdat.dxs4s.append(dxs4)
                 cur += 9
             else:
-                satdat.dxs4s.append(satData())
+                dxs4 = DXS4(bytearray(9))
+            satdat.dxs4s.append(dxs4)
             
     fd.close() 
 
