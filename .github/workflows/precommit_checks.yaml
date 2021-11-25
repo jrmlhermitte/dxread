@@ -20,5 +20,7 @@ jobs:
       - name: Add poetry to system path
         run: echo "$HOME/.poetry/bin" >> $GITHUB_PATH
       - name: Install python
-        run: poetry install
+        run: poetry install --no-dev
+      - name: precommit checks
+        run: poetry run ./scripts/checks
 

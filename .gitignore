@@ -4,3 +4,4 @@
 *.NOM
 *.CSU
 *.pyc
+*.ipynb_checkpoints
