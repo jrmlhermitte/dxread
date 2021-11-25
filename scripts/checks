@@ -1,0 +1,14 @@
+#!/usr/bin/bash
+# TODO: Use python precommit to run this in the future.
+set -e
+# flake8
+echo "Running flake8"
+flake8 dxread
+# pylint linter
+echo "Running pylint"
+pylint dxread
+# mypy
+echo "Running mypy"
+mypy dxread
+# black
+black --check dxread
