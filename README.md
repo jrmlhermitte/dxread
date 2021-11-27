@@ -19,7 +19,7 @@ sat_dat = read_dxdata(filepath)
 # Get the pixels from the satellite data
 pixels = sat_dat.pixels()
 ```
-where `pixels` is an object of type `dxread.models.dxpixel.DXPixel`.
+where `pixels` is a list of objects of type `dxread.models.dxpixel.DXPixel`.
 
 ### Example: Get Infrared Radiance
 From the pixels, you can plot various features.
