@@ -1,5 +1,6 @@
 const std = @import("std");
 
+
 pub fn build(b: *std.build.Builder) void {
     // Standard target options allows the person running `zig build` to choose
     // what target to build for. Here we do not override the defaults, which
@@ -11,7 +12,7 @@ pub fn build(b: *std.build.Builder) void {
     // between Debug, ReleaseSafe, ReleaseFast, and ReleaseSmall.
     const mode = b.standardReleaseOptions();
 
-    const exe = b.addExecutable("zig-dxread", "src/main.zig");
+    const exe = b.addExecutable("zig-dxread", "src/dxread.zig");
     exe.setTarget(target);
     exe.setBuildMode(mode);
     exe.install();
@@ -25,7 +26,7 @@ pub fn build(b: *std.build.Builder) void {
     const run_step = b.step("run", "Run the app");
     run_step.dependOn(&run_cmd.step);
 
-    const exe_tests = b.addTest("src/main.zig");
+    const exe_tests = b.addTest("src/dxread.zig");
     exe_tests.setTarget(target);
     exe_tests.setBuildMode(mode);
 
