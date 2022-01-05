@@ -13,28 +13,22 @@ pub const DXS4 = struct {
     vtmpic: u8,
     vprsic: u8,
 
-    pub fn fromBuffer(buffer: [constants.DXS4_SIZE]u8) !DXS4 {
-        var vret = (buffer[0] & 0b11110000) >> 4;
-        var vcsret = buffer[0] & 0b00001111;
-        var vcsrad = buffer[1];
-        var valbta = buffer[2];
-        var vcsalb = buffer[3];
-        var vtmp = buffer[4];
-        var vprs = buffer[5];
-        var vtauic = buffer[6];
-        var vtmpic = buffer[7];
-        var vprsic = buffer[8];
+    pub fn fromBuffer(buffer: []const u8) DXS4 {
         return DXS4{
-            .vret = vret,
-            .vcsret = vcsret,
-            .vcsrad = vcsrad,
-            .valbta = valbta,
-            .vcsalb = vcsalb,
-            .vtmp = vtmp,
-            .vprs = vprs,
-            .vtauic = vtauic,
-            .vtmpic = vtmpic,
-            .vprsic = vprsic,
+            .vret = (buffer[0] & 0b11110000) >> 4,
+            .vcsret = buffer[0] & 0b00001111,
+            .vcsrad = buffer[1],
+            .valbta = buffer[2],
+            .vcsalb = buffer[3],
+            .vtmp = buffer[4],
+            .vprs = buffer[5],
+            .vtauic = buffer[6],
+            .vtmpic = buffer[7],
+            .vprsic = buffer[8],
         };
+    }
+
+    pub fn deinit(self: *DXS4) void {
+        self.* = undefined;
     }
 };

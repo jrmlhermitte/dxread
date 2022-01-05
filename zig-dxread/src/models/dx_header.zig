@@ -2,13 +2,9 @@ const std = @import("std");
 const fs = std.fs;
 const constants = @import("../constants.zig");
 
-/// DX Header
 pub const DXHeader = struct {
-    /// Year
     year: u32,
-    /// Month
     month: u32,
-    /// day
     day: u32,
     utc: u32,
     satid: u32,
@@ -16,25 +12,19 @@ pub const DXHeader = struct {
     nchans: u32,
     nghtimg: u32,
 
-    fn trimAndParseInt(buffer: []u8) !u32 {
+    fn trimAndParseInt(buffer: *const [10]u8) !u32 {
         return try std.fmt.parseInt(u32, std.mem.trimLeft(u8, buffer, " "), 10);
     }
 
-    fn readNextAndParseInt(reader: constants.RecordHeaderReader, comptime numBytes: u64) !u32 {
-        var buffer = (try reader.readBytesNoEof(numBytes))[0..];
-        var res = try trimAndParseInt(buffer);
-        return res;
-    }
-
-    pub fn fromReader(reader: constants.RecordHeaderReader) !DXHeader {
-        var year: u32 = try readNextAndParseInt(reader, 10);
-        var month: u32 = try readNextAndParseInt(reader, 10);
-        var day: u32 = try readNextAndParseInt(reader, 10);
-        var utc: u32 = try readNextAndParseInt(reader, 10);
-        var satid: u32 = try readNextAndParseInt(reader, 10);
-        var sattyp: u32 = try readNextAndParseInt(reader, 10);
-        var nchans: u32 = try readNextAndParseInt(reader, 10);
-        var nghtimg: u32 = try readNextAndParseInt(reader, 10);
+    pub fn fromBuffer(buffer: [constants.RECORD_SIZE]u8) !DXHeader {
+        const year: u32 = try trimAndParseInt(buffer[0..10]);
+        const month: u32 = try trimAndParseInt(buffer[10 .. 10 * 2]);
+        const day: u32 = try trimAndParseInt(buffer[10 * 2 .. 10 * 3]);
+        const utc: u32 = try trimAndParseInt(buffer[10 * 3 .. 10 * 4]);
+        const satid: u32 = try trimAndParseInt(buffer[10 * 4 .. 10 * 5]);
+        const sattyp: u32 = try trimAndParseInt(buffer[10 * 5 .. 10 * 6]);
+        const nchans: u32 = try trimAndParseInt(buffer[10 * 6 .. 10 * 7]);
+        const nghtimg: u32 = try trimAndParseInt(buffer[10 * 7 .. 10 * 8]);
         return DXHeader{
             .year = year,
             .month = month,
@@ -45,5 +35,10 @@ pub const DXHeader = struct {
             .nchans = nchans,
             .nghtimg = nghtimg,
         };
+    }
+
+    pub fn deinit(self: *DXHeader) void {
+        // no memory needed to free here.
+        self.* = undefined;
     }
 };

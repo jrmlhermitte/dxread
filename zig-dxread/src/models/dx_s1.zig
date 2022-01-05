@@ -14,30 +14,23 @@ pub const DXS1 = struct {
     irad: u8,
     bxicsr: u8,
 
-    pub fn fromBuffer(buffer: [constants.DXS1_SIZE]u8) !DXS1 {
-        var noday = (buffer[0] & 0b10000000) >> 7;
-        var bxshor = (buffer[0] & 0b01000000) >> 6;
-        var lndwtr = (buffer[0] & 0b00100000) >> 5;
-        var hitopo = (buffer[0] & 0b00010000) >> 4;
-        var snoice = (buffer[0] & 0b00001100) >> 2;
-        var timspa = buffer[0] & 0b00000011;
-        var isclog = (buffer[1] & 0b11111000) >> 3;
-        var bxithr = buffer[1] & 0b00000111;
-        var mue = buffer[2];
-        var irad = buffer[3];
-        var bxicsr = buffer[4];
+    pub fn fromBuffer(buffer: []const u8) DXS1 {
         return DXS1{
-            .noday = noday,
-            .bxshor = bxshor,
-            .lndwtr = lndwtr,
-            .hitopo = hitopo,
-            .snoice = snoice,
-            .timspa = timspa,
-            .isclog = isclog,
-            .bxithr = bxithr,
-            .mue = mue,
-            .irad = irad,
-            .bxicsr = bxicsr,
+            .noday = (buffer[0] & 0b10000000) >> 7,
+            .bxshor = (buffer[0] & 0b01000000) >> 6,
+            .lndwtr = (buffer[0] & 0b00100000) >> 5,
+            .hitopo = (buffer[0] & 0b00010000) >> 4,
+            .snoice = (buffer[0] & 0b00001100) >> 2,
+            .timspa = buffer[0] & 0b00000011,
+            .isclog = (buffer[1] & 0b11111000) >> 3,
+            .bxithr = buffer[1] & 0b00000111,
+            .mue = buffer[2],
+            .irad = buffer[3],
+            .bxicsr = buffer[4],
         };
+    }
+
+    pub fn deinit(self: *DXS1) void {
+        self.* = undefined;
     }
 };
