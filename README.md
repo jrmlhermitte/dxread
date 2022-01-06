@@ -45,6 +45,16 @@ which should result in something like this for example:
 <img src="images/sample_irad_plot.png" alt="Sample Infrared Radiance Plot">
 
 
+## Zig code
+The library was also written in zig.
+You can find an example in `zig-dxread/dxread.zig`
+Run with:
+```bash
+cd zig-dxread
+zig build run
+```
+
+
 ## References:
 + dxread.c : http://isccp.giss.nasa.gov/pub/tables/ISCCP.DXREADC.0.GLOBAL.2003.09.99.9999.GPC
 
