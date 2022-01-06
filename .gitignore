@@ -5,3 +5,6 @@
 *.CSU
 *.pyc
 *.ipynb_checkpoints
+.vscode
+zig-cache
+*zig-out*
